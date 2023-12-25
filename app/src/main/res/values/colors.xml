@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- COLOR PALETTE FOR THE APPLICATION -->
+<resources>
+    <color name="dark_green">#1F2B1A</color> <!-- PRIMARY COLOR -->
+    <color name="light_green">#43533D</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#FFC64F</color>
+    <color name="black">#000000</color>
+</resources>

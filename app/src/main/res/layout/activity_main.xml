@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_green"
+    tools:context=".MainActivity"
+    >
+
+    <Chronometer
+        android:id="@+id/Chronometer_record_timer"
+        android:layout_width="241dp"
+        android:layout_height="122dp"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/coordinatorLayout" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="129dp">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/light_green"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:fabAlignmentMode="center"
+            app:fabCradleRoundedCornerRadius="16dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_record"
+            style="@style/Widget.Design.FloatingActionButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+
+            android:backgroundTint="@color/dark_green"
+            android:contentDescription="@string/record"
+            android:elevation="2dp"
+            android:src="@drawable/mic"
+            android:stateListAnimator="@null"
+            android:tint="@color/white"
+            app:backgroundTint="@color/white"
+            app:borderWidth="3dp"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="bottom|center"
+            app:rippleColor="@color/dark_green"
+            app:srcCompat="@drawable/mic"
+            app:tint="@color/yellow" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_stop"
+            style="@style/Widget.Design.FloatingActionButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/dark_green"
+            android:contentDescription="@string/record"
+            android:elevation="2dp"
+            android:src="@drawable/mic"
+            android:stateListAnimator="@null"
+            android:tint="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/white"
+            app:borderWidth="3dp"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="bottom|left"
+            app:rippleColor="@color/dark_green"
+            app:srcCompat="@drawable/mic"
+            app:tint="@color/yellow" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_pause"
+            style="@style/Widget.Design.FloatingActionButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/dark_green"
+            android:contentDescription="@string/record"
+            android:elevation="2dp"
+            android:src="@drawable/mic"
+            android:stateListAnimator="@null"
+            android:tint="@color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/white"
+            app:borderWidth="3dp"
+            app:layout_anchor="@+id/bottomAppBar"
+            app:layout_anchorGravity="bottom|right"
+            app:rippleColor="@color/dark_green"
+            app:srcCompat="@drawable/mic"
+            app:tint="@color/yellow" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

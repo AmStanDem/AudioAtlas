@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AudioAtlas</string>
+    <string name="feeds">Feeds</string>
+    <string name="friends">Friends</string>
+    <string name="about">About</string>
+    <string name="record">Record</string>
+</resources>
