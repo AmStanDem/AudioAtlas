@@ -4,4 +4,7 @@
     <string name="friends">Friends</string>
     <string name="about">About</string>
     <string name="record">Record</string>
+    <string name="stop">Stop</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
 </resources>
