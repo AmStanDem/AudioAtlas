@@ -7,4 +7,9 @@
     <string name="stop">Stop</string>
     <string name="pause">Pause</string>
     <string name="play">Play</string>
+    <string name="settings">settings</string>
+    <string name="rewind">rewind</string>
+    <string name="next">next</string>
+    <string name="mute">mute</string>
+    <string name="max">max</string>
 </resources>
