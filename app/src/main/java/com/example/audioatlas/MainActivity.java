@@ -1,14 +1,16 @@
 package com.example.audioatlas;
 
+import static android.Manifest.permission.MODIFY_AUDIO_SETTINGS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
+import static android.Manifest.permission.WRITE_SETTINGS;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
@@ -21,15 +23,19 @@ import android.util.Log;
 
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
-
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     /** ATTRIBUTES */
     private FloatingActionButton btnRecord, btnStop, btnPause;
     private Chronometer chronometerRecordTimer;
+    private MaterialToolbar topBar;
 
     private long timeWhenStopped = 0;
 
@@ -72,6 +79,14 @@ public class MainActivity extends AppCompatActivity
         if (CheckPermissions())
             RequestPermissions();
 
+        topBar.setOnMenuItemClickListener(menuItem ->
+        {
+            if (menuItem.getItemId() == R.id.records)
+            {
+                changeActivityToRecordsActivity();
+            }
+            return false;
+        });
         btnRecord.setOnClickListener(v -> {
             Log.println(Log.DEBUG, "C", "Ciao");
             if(CheckPermissions())
@@ -141,8 +156,7 @@ public class MainActivity extends AppCompatActivity
                     chronometerRecordTimer.stop();
                     timeWhenStopped = 0;
                 }
-                Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
-                startActivity(intent);
+                changeActivityToRecordsActivity();
             }
         });
         btnPause.setOnClickListener(v -> {
@@ -169,6 +183,7 @@ public class MainActivity extends AppCompatActivity
     }
     private void setElementsIds()
     {
+        topBar = findViewById(R.id.topAppBar);
         btnRecord = findViewById(R.id.btn_record);
         btnPause = findViewById(R.id.btn_pause);
         btnStop = findViewById(R.id.btn_stop);
@@ -180,14 +195,28 @@ public class MainActivity extends AppCompatActivity
         int result = ActivityCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
         int result1 = ActivityCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
         int result2 = ActivityCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
-        return result != PackageManager.PERMISSION_GRANTED || result1 != PackageManager.PERMISSION_GRANTED || result2 != PackageManager.PERMISSION_GRANTED;
+        int result3 = ActivityCompat.checkSelfPermission(getApplicationContext(), WRITE_SETTINGS);
+        int result4 = ActivityCompat.checkSelfPermission(getApplicationContext(), MODIFY_AUDIO_SETTINGS);
+        return
+                        result != PackageManager.PERMISSION_GRANTED ||
+                        result1 != PackageManager.PERMISSION_GRANTED ||
+                        result2 != PackageManager.PERMISSION_GRANTED ||
+                        result3 != PackageManager.PERMISSION_GRANTED ||
+                        result4 != PackageManager.PERMISSION_GRANTED;
     }
 
     private void RequestPermissions() {
         // this method is used to request the
         // permission for audio recording and storage.
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, WRITE_EXTERNAL_STORAGE}, REQUEST_AUDIO_PERMISSION_CODE);
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, WRITE_SETTINGS, MODIFY_AUDIO_SETTINGS}, REQUEST_AUDIO_PERMISSION_CODE);
     }
+
+    private void changeActivityToRecordsActivity()
+    {
+        Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
+        startActivity(intent);
+    }
+
 
 
 }
