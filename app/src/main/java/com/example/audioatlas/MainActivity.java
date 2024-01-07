@@ -5,37 +5,23 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_SETTINGS;
-
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
-
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.EditText;
 import android.widget.Toast;
-
-
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -73,7 +59,6 @@ public class MainActivity extends AppCompatActivity
         setElementsIds();
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        //chronometerRecordTimer.setBase(SystemClock.elapsedRealtime());
         timeWhenStopped = chronometerRecordTimer.getBase() - SystemClock.elapsedRealtime();
         chronometerRecordTimer.stop();
         if (CheckPermissions())

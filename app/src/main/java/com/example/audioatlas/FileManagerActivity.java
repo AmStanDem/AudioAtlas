@@ -1,12 +1,6 @@
 package com.example.audioatlas;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -16,17 +10,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -58,14 +46,9 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp)
-            {
-                btnPlayAndResume.setImageResource(R.drawable.play_arrow);
-                seekBarAudioLen.setProgress(0, false);
-                mp = null;
-            }
+        mediaPlayer.setOnCompletionListener(mp -> {
+            btnPlayAndResume.setImageResource(R.drawable.play_arrow);
+            seekBarAudioLen.setProgress(0, false);
         });
 
         Handler mHandler = new Handler();
@@ -105,9 +88,9 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             {
                 mediaPlayer.release();
                 mediaPlayer = null;
-                seekBarAudioLen.setProgress(0);
-                btnPlayAndResume.setImageResource(R.drawable.play_arrow);
             }
+            seekBarAudioLen.setProgress(0);
+            btnPlayAndResume.setImageResource(R.drawable.play_arrow);
         });
         btnPlayAndResume.setOnClickListener(l->
         {
@@ -132,10 +115,9 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             {
                 mediaPlayer.release();
                 mediaPlayer = null;
-                seekBarAudioLen.setProgress(seekBarAudioLen.getMax());
-                btnPlayAndResume.setImageResource(R.drawable.play_arrow);
-
             }
+            seekBarAudioLen.setProgress(seekBarAudioLen.getMax());
+            btnPlayAndResume.setImageResource(R.drawable.play_arrow);
 
         });
         btnVolumeDown.setOnClickListener(l ->
@@ -152,16 +134,15 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
         });
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-
-    }
 
     @Override
     public void onItemClick(View view, int position)
     {
-        selectedFile = null;
-        loadDataToMultimedia(position);
+        if (!mediaPlayer.isPlaying())
+        {
+            selectedFile = null;
+            loadDataToMultimedia(position);
+        }
     }
     private void loadDataToMultimedia(int position)
     {
@@ -194,16 +175,11 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             {
                 mediaPlayer.start();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    seekBarAudioLen.setMax((int) (mediaPlayer.getDuration() / 1000));
+                    seekBarAudioLen.setMax(mediaPlayer.getDuration() / 1000);
                 }
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp)
-                    {
-                        mp = null;
-                        btnPlayAndResume.setImageResource(R.drawable.play_arrow);
-                        seekBarAudioLen.setProgress(0, true);
-                    }
+                mediaPlayer.setOnCompletionListener(mp -> {
+                    btnPlayAndResume.setImageResource(R.drawable.play_arrow);
+                    seekBarAudioLen.setProgress(0, true);
                 });
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,29 +1,12 @@
 package com.example.audioatlas;
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 import static androidx.core.content.ContextCompat.startActivity;
-
-import static java.security.AccessController.getContext;
-
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.RingtonePreference;
-import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,18 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.MimeTypeFilter;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,11 +35,7 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
     private  final List<File> mData;
     private final LayoutInflater mInflater;
     private static ItemClickListener mClickListener;
-
-    private int selectedPosition = -1;
-
-    private int previousPosition = -1;
-    private Context context;
+    private final Context context;
     // data is passed into the constructor
     AudioFilesRecyclerViewAdapter(Context context, ArrayList<File> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -72,15 +44,16 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
     }
 
     // inflates the row layout from xml when needed
+
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.rv_row, parent, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return new ViewHolder(view, context);
-        }
-        return null;
+        return new ViewHolder(view, context);
     }
+
 
     // binds the data to the TextView in each row
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -95,8 +68,14 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         String textAudioDate = getAudioCreationDateToString(audioFile);
         holder.textViewDate.setText(textAudioDate);
 
-        String textAudioSize = String.valueOf(getAudioSize(audioFile));
-        holder.textViewFileSize.setText(textAudioSize +" bytes" );
+        String textAudioSize;
+        try {
+            textAudioSize = String.valueOf(Files.size(audioFile.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        textAudioSize+=" bytes";
+        holder.textViewFileSize.setText(textAudioSize);
 
 
 
@@ -117,11 +96,11 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         private TextView textViewDate , textViewFileSize;
         private ImageButton btnSettings;
         // variable to hold context
-        private Context context;
+        private final Context context;
         public  File file;
 
 
-        @RequiresApi(api = Build.VERSION_CODES.Q)
+
         ViewHolder(View itemView , Context context) {
             super(itemView);
             setElementIds(itemView);
@@ -174,7 +153,6 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                         {
                                             newName+=".mp3";
                                             File Directory = context.getFilesDir();
-                                            File newFile = new File(newName);
                                             if (Directory.exists())
                                             {
                                                 // Rename the old file to the new file
@@ -182,9 +160,9 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                                         Path source = Paths.get(file.toURI());
                                                         try {
-                                                            Path newPath = Files.move(source, source.resolveSibling(newName), StandardCopyOption.ATOMIC_MOVE);
-                                                            mData.set(this.getAdapterPosition(), newPath.toFile());
-                                                            notifyItemChanged(getAdapterPosition());
+                                                            Path newPath = Files.move(source, source.resolveSibling(newName), StandardCopyOption.REPLACE_EXISTING);
+                                                            mData.set(getAdapterPosition(), newPath.toFile());
+                                                            notifyItemChanged(getAdapterPosition(), newPath.toFile());
                                                         } catch (IOException e) {
                                                             throw new RuntimeException(e);
                                                         }
@@ -203,9 +181,7 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                     AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
                                     deleteBuilder.setTitle("Elimina");
                                     deleteBuilder.setMessage("Sei sicuro?");
-                                    deleteBuilder.setPositiveButton("Ok", (deleteDialog, deleteWhich)->{
-                                        removeItem(this.getAdapterPosition(), file);
-                                    });
+                                    deleteBuilder.setPositiveButton("Ok", (deleteDialog, deleteWhich)-> removeItem(this.getAdapterPosition(), file));
                                     AlertDialog removeDialog = deleteBuilder.create();
                                     removeDialog.show();
                                     break;
@@ -228,14 +204,9 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                 }
                             }
                         })
-                        .setNegativeButton("Annulla", (dialog, which) -> {
-                            dialog.cancel();
-                        })
-                        .setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        .setNegativeButton("Annulla", (dialog, which) -> dialog.cancel())
+                        .setSingleChoiceItems(choices, 0, (dialog, which) -> {
 
-                            }
                         });
 // 3. Get the AlertDialog.
                 AlertDialog dialog = builder.create();
@@ -266,11 +237,12 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+
     public String getAudioLength(File audioFile)
     {
-        try (MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever())
+        try
         {
+            MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
             metadataRetriever.setDataSource(audioFile.getAbsolutePath());
             double duration = Double.parseDouble(Objects.requireNonNull(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
             duration = duration / 1000;
@@ -319,27 +291,7 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         return "";
     }
 
-    private long getAudioSize(File audioFile)
-    {
-        try {
-            Path file = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                file = audioFile.toPath();
-            }
-            BasicFileAttributes attr = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                attr = Files.readAttributes(file, BasicFileAttributes.class);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return attr.size();
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return 0;
-    }
+
 
     // convenience method for getting data at click position
     File getItem(int id) {
@@ -349,10 +301,6 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
-    }
-
-    public List<File> getmData() {
-        return mData;
     }
 
     private void removeItem(int position, File fileToDelete) {
@@ -375,13 +323,11 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
 
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
+        mClickListener = itemClickListener;
     }
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onPrepared(MediaPlayer mp);
-
         void onItemClick(View view, int position);
     }
 }
