@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                                 "dd-MM-yyyy-HH.mm.ss", Locale.ITALY
                         );
 
-                File Directory = MainActivity.this.getFilesDir();
+                File Directory = MainActivity.this.getCacheDir();
 
                 File file = new File(Directory, "AudioAtlas_" + timeStampFormat.format(new Date()) + ".mp3");
 

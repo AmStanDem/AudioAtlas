@@ -41,7 +41,7 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
         setContentView(R.layout.activity_file_manager);
         // data to populate the RecyclerView with
         ArrayList<File> audioFiles = new ArrayList<>();
-        Collections.addAll(audioFiles, Objects.requireNonNull(this.getFilesDir().listFiles()));
+        Collections.addAll(audioFiles, Objects.requireNonNull(this.getCacheDir().listFiles()));
         setElementsId();
         // set up the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
