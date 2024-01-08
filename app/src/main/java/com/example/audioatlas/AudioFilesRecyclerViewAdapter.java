@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
@@ -30,35 +29,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFilesRecyclerViewAdapter.ViewHolder> {
-
+public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFilesRecyclerViewAdapter.ViewHolder>
+{
     private  final List<File> mData;
     private final LayoutInflater mInflater;
     private static ItemClickListener mClickListener;
     private final Context context;
     // data is passed into the constructor
-    AudioFilesRecyclerViewAdapter(Context context, ArrayList<File> data) {
+    AudioFilesRecyclerViewAdapter(Context context, ArrayList<File> data)
+    {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.context = context;
     }
-
-    // inflates the row layout from xml when needed
-
-
-
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = mInflater.inflate(R.layout.rv_row, parent, false);
         return new ViewHolder(view, context);
     }
-
-
     // binds the data to the TextView in each row
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position)
+    {
         File audioFile = mData.get(position);
         holder.textViewFileName.setText(audioFile.getName());
 
@@ -69,67 +63,53 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         holder.textViewDate.setText(textAudioDate);
 
         String textAudioSize;
-        try {
-            textAudioSize = String.valueOf(Files.size(audioFile.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        textAudioSize = String.valueOf(audioFile.length());
         textAudioSize+=" bytes";
         holder.textViewFileSize.setText(textAudioSize);
-
-
-
     }
-
-
     // total number of rows
     @Override
     public int getItemCount() {
         return mData.size();
     }
-
-
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        /** UI ELEMENTS **/
         private TextView textViewFileName;
         private TextView durationTextView;
         private TextView textViewDate , textViewFileSize;
         private ImageButton btnSettings;
         // variable to hold context
+        /*****************/
         private final Context context;
-        public  File file;
-
-
-
-        ViewHolder(View itemView , Context context) {
+        private File fileItem;
+        ViewHolder(View itemView , Context context)
+        {
             super(itemView);
             setElementIds(itemView);
             this.context = context;
-            btnSettings.setOnClickListener(v -> {
+            btnSettings.setOnClickListener(v ->
+            {
                 // 1. Instantiate an AlertDialog.Builder with its constructor.
                 AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-
                 String[] choices = {"Condividi/Inviare", "Rinominare", "Eliminare","Aprire con"};
-
 // 2. Chain together various setter methods to set the dialog characteristics.
                         builder
                         .setTitle(textViewFileName.getText())
                         .setPositiveButton("Ok", (dialog, which) -> {
-
                             // user clicked OK
                             int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
                             // do something with the selection
                             Log.println(Log.DEBUG, "d", String.valueOf(selectedPosition));
-
-                            file = mData.get(getAdapterPosition());
+                            fileItem = mData.get(getAdapterPosition());
                             switch (choices[selectedPosition])
                             {
                                 case "Condividi/Inviare":
                                 {
-                                    if(file.exists()) {
+                                    if(fileItem.exists()) {
                                         Intent share = new Intent(Intent.ACTION_SEND);
                                         share.setType("audio/mp3");
-                                        share.putExtra(Intent.EXTRA_STREAM,  FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file));
+                                        share.putExtra(Intent.EXTRA_STREAM,  FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", fileItem));
                                         startActivity(context, share, null);
                                     }
                                     break;
@@ -156,9 +136,9 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                             if (Directory.exists())
                                             {
                                                 // Rename the old file to the new file
-                                                if (file.exists()) {
+                                                if (fileItem.exists()) {
                                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                                        Path source = Paths.get(file.toURI());
+                                                        Path source = Paths.get(fileItem.toURI());
                                                         try {
                                                             Path newPath = Files.move(source, source.resolveSibling(newName), StandardCopyOption.REPLACE_EXISTING);
                                                             mData.set(getAdapterPosition(), newPath.toFile());
@@ -171,9 +151,9 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                             }
                                         }
                                     });
+                                    renameBuilder.setNegativeButton("Annulla", (renameDialog, renameWhich)->{});
                                     AlertDialog renameDialog = renameBuilder.create();
                                     renameDialog.show();
-
                                     break;
                                 }
                                 case "Eliminare":
@@ -181,7 +161,8 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                     AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
                                     deleteBuilder.setTitle("Elimina");
                                     deleteBuilder.setMessage("Sei sicuro?");
-                                    deleteBuilder.setPositiveButton("Ok", (deleteDialog, deleteWhich)-> removeItem(this.getAdapterPosition(), file));
+                                    deleteBuilder.setPositiveButton("Ok", (deleteDialog, deleteWhich)-> removeItem(this.getAdapterPosition(), fileItem));
+                                    deleteBuilder.setNegativeButton("Annulla", (deleteDialog, deleteWhich)->{});
                                     AlertDialog removeDialog = deleteBuilder.create();
                                     removeDialog.show();
                                     break;
@@ -191,7 +172,7 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                                     // Open file with user selected app
                                     Intent intent = new Intent();
                                     intent.setAction(Intent.ACTION_VIEW);
-                                    Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+                                    Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", fileItem);
                                     String mime = context.getContentResolver().getType(fileUri);
                                     intent.setDataAndType(fileUri, mime);
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -208,15 +189,11 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
                         .setSingleChoiceItems(choices, 0, (dialog, which) -> {
 
                         });
-// 3. Get the AlertDialog.
                 AlertDialog dialog = builder.create();
                 dialog.show();
             });
             itemView.setOnClickListener(this);
         }
-
-
-
         private void setElementIds(View itemView)
         {
             textViewFileName = itemView.findViewById(R.id.tv_file_name);
@@ -225,7 +202,6 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
             durationTextView = itemView.findViewById(R.id.tv_duration);
             btnSettings = itemView.findViewById(R.id.btn_settings);
         }
-
         @Override
         public void onClick(View view)
         {
@@ -236,8 +212,6 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
             }
         }
     }
-
-
     public String getAudioLength(File audioFile)
     {
         try
@@ -255,7 +229,6 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         }
         return "";
     }
-
     private String secondsToHoursMinutesAndSecondsToString(long durationInSeconds)
     {
         int hours = (int) durationInSeconds / 3600;
@@ -267,11 +240,11 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         return hours + ":"+minutes + ":" + seconds;
 
     }
-
     @NonNull
     private String getAudioCreationDateToString(File audioFile)
     {
         try {
+
             Path file = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 file = audioFile.toPath();
@@ -290,19 +263,10 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
         }
         return "";
     }
-
-
-
     // convenience method for getting data at click position
     File getItem(int id) {
         return mData.get(id);
     }
-
-    @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
-    }
-
     private void removeItem(int position, File fileToDelete) {
         mData.remove(position);
         notifyItemRemoved(position);
@@ -318,14 +282,10 @@ public class AudioFilesRecyclerViewAdapter extends RecyclerView.Adapter<AudioFil
             }
         }
     }
-
-
-
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
         mClickListener = itemClickListener;
     }
-
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);

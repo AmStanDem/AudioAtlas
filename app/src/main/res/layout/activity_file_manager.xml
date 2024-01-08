@@ -3,20 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="enterAlways">
-
-
             <!-- LAYOUT FOR THE REPRODUCTION BAR-->
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -24,14 +20,12 @@
                 android:background="@color/light_green"
                 android:layout_alignParentTop="true"
                 >
-
                 <LinearLayout
-                    android:id="@id/buttons_container"
+                    android:id="@+id/buttons_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp">
-
                     <ImageButton
                         android:id="@+id/btn_previous"
                         android:layout_width="wrap_content"
@@ -43,7 +37,6 @@
                         app:borderWidth="3dp"
                         app:rippleColor="@color/dark_green"
                         app:tint="@color/yellow" />
-
                     <ImageButton
                         android:id="@+id/btn_play_resume"
                         android:layout_width="wrap_content"
@@ -55,7 +48,6 @@
                         app:borderWidth="3dp"
                         app:rippleColor="@color/dark_green"
                         app:tint="@color/yellow" />
-
                     <ImageButton
                         android:id="@+id/btn_next"
                         android:layout_width="wrap_content"
@@ -67,7 +59,6 @@
                         app:borderWidth="3dp"
                         app:rippleColor="@color/dark_green"
                         app:tint="@color/yellow" />
-
                     <ImageButton
                         android:id="@+id/btn_volume_down"
                         android:layout_width="wrap_content"
@@ -79,7 +70,6 @@
                         app:borderWidth="3dp"
                         app:rippleColor="@color/dark_green"
                         app:tint="@color/yellow" />
-
                     <ImageButton
                         android:id="@+id/btn_volume_up"
                         android:layout_width="wrap_content"
@@ -92,7 +82,6 @@
                         app:rippleColor="@color/dark_green"
                         app:tint="@color/yellow" />
                 </LinearLayout>
-
                 <SeekBar
                     android:id="@+id/seekBar_audio_duration"
                     android:layout_width="match_parent"
@@ -100,14 +89,12 @@
                     android:layout_below="@id/buttons_container"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"/>
-
                 <TextView
                     android:id="@+id/TextView_audio_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/seekBar_audio_duration"
                     android:layout_alignParentStart="true" />
-
                 <TextView
                     android:id="@+id/TextView_audio_end"
                     android:layout_width="wrap_content"
@@ -115,18 +102,12 @@
                     android:layout_below="@id/seekBar_audio_duration"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
-            <!-- -->
-
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_audio_files"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/dark_green"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

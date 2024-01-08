@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_green"
-    tools:context=".MainActivity"
-    >
-
+    tools:context=".MainActivity">
     <Chronometer
         android:id="@+id/Chronometer_record_timer"
         android:layout_width="241dp"
@@ -21,18 +19,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/coordinatorLayout" />
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="129dp">
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -46,11 +41,7 @@
                 app:menu="@menu/top_app_bar"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white" />
-
         </com.google.android.material.appbar.AppBarLayout>
-
-
-
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
             android:layout_width="match_parent"
@@ -61,7 +52,6 @@
             app:contentInsetStart="0dp"
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="16dp" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_record"
             style="@style/Widget.Design.FloatingActionButton"
@@ -69,7 +59,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
-
             android:backgroundTint="@color/dark_green"
             android:contentDescription="@string/record"
             android:elevation="2dp"
@@ -83,7 +72,6 @@
             app:rippleColor="@color/dark_green"
             app:srcCompat="@drawable/mic"
             app:tint="@color/yellow" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_stop"
             style="@style/Widget.Design.FloatingActionButton"
@@ -106,7 +94,6 @@
             app:rippleColor="@color/dark_green"
             app:srcCompat="@drawable/mic"
             app:tint="@color/yellow" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_pause"
             style="@style/Widget.Design.FloatingActionButton"
@@ -129,10 +116,5 @@
             app:rippleColor="@color/dark_green"
             app:srcCompat="@drawable/mic"
             app:tint="@color/yellow" />
-
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

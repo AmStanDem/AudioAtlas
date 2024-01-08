@@ -3,7 +3,6 @@ package com.example.audioatlas;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -18,22 +17,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
-
 public class FileManagerActivity extends AppCompatActivity implements  AudioFilesRecyclerViewAdapter.ItemClickListener {
-
     private AudioFilesRecyclerViewAdapter adapter;
-
-    private MediaPlayer mediaPlayer = new MediaPlayer();
-
-    /** ATTRIBUTES **/
+    private MediaPlayer mediaPlayer;
+    /** UI ATTRIBUTES **/
     private ImageButton btnPrevious, btnPlayAndResume,btnNext,btnVolumeDown,btnVolumeMax;
     private SeekBar seekBarAudioLen;
     private TextView textViewStart, textViewEnd;
     private RecyclerView recyclerView;
+    /********************/
     private File selectedFile;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager);
         // data to populate the RecyclerView with
@@ -45,17 +41,19 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
         adapter = new AudioFilesRecyclerViewAdapter(this, audioFiles);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
-
-        mediaPlayer.setOnCompletionListener(mp -> {
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(mp ->
+        {
             btnPlayAndResume.setImageResource(R.drawable.play_arrow);
             seekBarAudioLen.setProgress(0, false);
         });
-
         Handler mHandler = new Handler();
         FileManagerActivity.this.runOnUiThread(new Runnable() {
             @Override
-            public void run() {
-                if(mediaPlayer != null){
+            public void run()
+            {
+                if(mediaPlayer != null)
+                {
                     int mCurrentPosition = mediaPlayer.getCurrentPosition() / 1000;
                     seekBarAudioLen.setProgress(mCurrentPosition);
                 }
@@ -63,25 +61,21 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             }
         });
         seekBarAudioLen.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {}
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {}
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mediaPlayer != null && fromUser){
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                if(mediaPlayer != null && fromUser)
+                {
                     mediaPlayer.seekTo(progress * 1000);
                 }
             }
         });
-
         btnPrevious.setOnClickListener(l->
         {
             if (mediaPlayer != null)
@@ -133,8 +127,6 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
         });
     }
-
-
     @Override
     public void onItemClick(View view, int position)
     {
@@ -146,8 +138,6 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
     }
     private void loadDataToMultimedia(int position)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-        {
             selectedFile = adapter.getItem(position);
             mediaPlayer = null;
             String audioLen = String.valueOf(adapter.getAudioLength(selectedFile));
@@ -155,7 +145,6 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             textViewEnd.setText(audioLen);
             seekBarAudioLen.setProgress(0, false);
             setAudio(selectedFile);
-        }
     }
     private void setElementsId()
     {
@@ -174,18 +163,17 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             try
             {
                 mediaPlayer.start();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    seekBarAudioLen.setMax(mediaPlayer.getDuration() / 1000);
-                }
+                seekBarAudioLen.setMax(mediaPlayer.getDuration() / 1000);
                 mediaPlayer.setOnCompletionListener(mp -> {
                     btnPlayAndResume.setImageResource(R.drawable.play_arrow);
                     seekBarAudioLen.setProgress(0, true);
                 });
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
     }
-
     private void setAudio(File selectedFile)
     {
         if (selectedFile == null)
@@ -193,9 +181,7 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
         if (mediaPlayer == null)
             mediaPlayer = new MediaPlayer();
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mediaPlayer.setDataSource(FileManagerActivity.this, Objects.requireNonNull(FileProvider.getUriForFile(FileManagerActivity.this, FileManagerActivity.this.getApplicationContext().getPackageName() + ".provider", selectedFile)));
-            }
+            mediaPlayer.setDataSource(FileManagerActivity.this, Objects.requireNonNull(FileProvider.getUriForFile(FileManagerActivity.this, FileManagerActivity.this.getApplicationContext().getPackageName() + ".provider", selectedFile)));
             mediaPlayer.prepare();
         }
         catch (Exception e)
@@ -203,6 +189,4 @@ public class FileManagerActivity extends AppCompatActivity implements  AudioFile
             e.printStackTrace();
         }
     }
-
-
 }

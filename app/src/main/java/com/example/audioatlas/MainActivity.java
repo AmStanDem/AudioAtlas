@@ -1,5 +1,4 @@
 package com.example.audioatlas;
-
 import static android.Manifest.permission.MODIFY_AUDIO_SETTINGS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -25,32 +24,21 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-
 public class MainActivity extends AppCompatActivity
 {
-
     private static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
     /** ATTRIBUTES */
     private FloatingActionButton btnRecord, btnStop, btnPause;
     private Chronometer chronometerRecordTimer;
     private MaterialToolbar topBar;
-
     private long timeWhenStopped = 0;
-
     private MediaRecorder mediaRecorder;
-
     private boolean isRecordingPaused = false;
-
-
-
     /**************************************/
-
     @Override
     protected void onStart() {
         super.onStart();
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,27 +61,21 @@ public class MainActivity extends AppCompatActivity
             return false;
         });
         btnRecord.setOnClickListener(v -> {
-            Log.println(Log.DEBUG, "C", "Ciao");
+            //Log.println(Log.DEBUG, "C", "Ciao");
             if(CheckPermissions())
             {
-
                 btnRecord.setVisibility(View.INVISIBLE);
                 btnPause.setVisibility(View.VISIBLE);
                 btnStop.setVisibility(View.VISIBLE);
-
                 SimpleDateFormat timeStampFormat = new SimpleDateFormat
                         (
                                 "dd-MM-yyyy-HH.mm.ss", Locale.ITALY
                         );
 
                 File Directory = MainActivity.this.getCacheDir();
-
                 File file = new File(Directory, "AudioAtlas_" + timeStampFormat.format(new Date()) + ".mp3");
-
-                Log.println(Log.DEBUG, "d", file.getAbsolutePath());
-
+                //Log.println(Log.DEBUG, "d", file.getAbsolutePath());
                 mediaRecorder = new MediaRecorder();
-
                 mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -106,11 +88,9 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     Log.println(Log.DEBUG, "", "prepare() failed");
                 }
-
                 mediaRecorder.start();
                 chronometerRecordTimer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
                 chronometerRecordTimer.start();
-
             }
             else
             {
@@ -174,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         btnStop = findViewById(R.id.btn_stop);
         chronometerRecordTimer = findViewById(R.id.Chronometer_record_timer);
     }
-
     public boolean CheckPermissions() {
         // this method is used to check permission
         int result = ActivityCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
@@ -189,19 +168,14 @@ public class MainActivity extends AppCompatActivity
                         result3 != PackageManager.PERMISSION_GRANTED ||
                         result4 != PackageManager.PERMISSION_GRANTED;
     }
-
     private void RequestPermissions() {
         // this method is used to request the
         // permission for audio recording and storage.
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, WRITE_SETTINGS, MODIFY_AUDIO_SETTINGS}, REQUEST_AUDIO_PERMISSION_CODE);
     }
-
     private void changeActivityToRecordsActivity()
     {
         Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
         startActivity(intent);
     }
-
-
-
 }
